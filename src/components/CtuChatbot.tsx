@@ -10,7 +10,7 @@ import {
   X,
 } from "lucide-react";
 import { getCampusBySlug } from "@/data/campuses";
-import { useCampus } from "@/context/CampusContext";
+import { CHAT_PREFILL_EVENT, useCampus } from "@/context/CampusContext";
 
 interface ChatMessage {
   id: string;
@@ -23,7 +23,7 @@ const INITIAL_ASSISTANT_MSG: ChatMessage = {
   id: "welcome",
   role: "assistant",
   content:
-    "Hi! I'm the **CTU Portal Assistant**. Ask me about synced **ctu.edu.ph** announcements, campus locations, academic programs, or official portals like enrollment and LMS.",
+    "Hi! I'm the **7U AI Assistant** (CTU Student & Campus Portal). Ask me about synced **ctu.edu.ph** announcements, campus locations, academic programs, official portals, or what **7U** stands for!",
 };
 
 // tiny inline markdown parser for bold, links, and inline code so we dont ship a heavy md lib
@@ -152,6 +152,7 @@ export function CtuChatbot() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const msgSeqRef = useRef(0);
 
   const nextId = (prefix: string) => {
@@ -178,6 +179,21 @@ export function CtuChatbot() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages, loading, open]);
+
+  // listen for prefill prompts from program matcher cards and focus the input box
+  useEffect(() => {
+    const handlePrefill = (event: Event) => {
+      const prompt = (event as CustomEvent<string>).detail;
+      if (typeof prompt === "string" && prompt.trim()) {
+        setInput(prompt);
+        requestAnimationFrame(() => {
+          inputRef.current?.focus();
+        });
+      }
+    };
+    window.addEventListener(CHAT_PREFILL_EVENT, handlePrefill);
+    return () => window.removeEventListener(CHAT_PREFILL_EVENT, handlePrefill);
+  }, []);
 
   async function sendMessage(textOverride?: string) {
     const trimmed = (textOverride ?? input).trim();
@@ -273,7 +289,7 @@ export function CtuChatbot() {
               </div>
               <div className="min-w-0">
                 <h2 className="display truncate text-sm font-bold">
-                  CTU Portal Assistant
+                  7U AI Assistant
                 </h2>
                 <div className="flex items-center gap-1.5">
                   <span className="h-1.5 w-1.5 rounded-full bg-[#FF9A00]" />
@@ -374,6 +390,7 @@ export function CtuChatbot() {
             className="flex items-center gap-2 border-t border-[#EBD3AE] bg-[#FFF9EC] p-3"
           >
             <input
+              ref={inputRef}
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}

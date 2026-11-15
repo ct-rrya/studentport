@@ -6,5 +6,5 @@ export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
   const cache = await readPortalCache();
-  return <HomeClient posts={cache.posts} syncStatus={cache.syncStatus} />;
+  return <HomeClient posts={cache.posts} />;
 }

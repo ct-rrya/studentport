@@ -15,9 +15,9 @@ export async function GET() {
   const extensionCampuses = CTU_CAMPUSES.filter((c) => c.type === "extension");
 
   const lines: string[] = [
-    "# CTU Student & Campus Portal",
+    "# 7U — CTU Student & Campus Portal",
     "",
-    "> An independent, student-built portal for Cebu Technological University (CTU) that automatically syncs and organizes public announcements from ctu.edu.ph alongside degree programs, student portals, and all 29 CTU campuses across Cebu.",
+    "> 7U is an independent, student-built portal for Cebu Technological University (CTU) built around 7 core pillars (Unified, Updated, University-Wide, User-Centered, Utility-Driven, Understandable, Uplifting). It automatically syncs public announcements from ctu.edu.ph alongside degree programs, student portals, and all 29 CTU campuses across Cebu.",
     "",
     `Last synced: ${cache.syncStatus.lastSyncedAt || "pending"}`,
     `Portal Base URL: ${siteUrl}`,

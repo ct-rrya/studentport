@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { CTU_CAMPUSES, getCampusBySlug, getCampusFacebookUrl } from "@/data/campuses";
 import { useCampus } from "@/context/CampusContext";
-import { CampusType, NewsPost, SyncStatus } from "@/types/portal";
+import { CampusType, NewsPost } from "@/types/portal";
 import { NewsCard } from "./NewsCard";
 import { CampusTypeBadge } from "./CampusBadge";
 import { FacebookFeedEmbed } from "./FacebookFeedEmbed";
@@ -113,10 +113,8 @@ function formatCompactMonthDay(dateStr: string): string {
 
 export function HomeClient({
   posts,
-  syncStatus,
 }: {
   posts: NewsPost[];
-  syncStatus: SyncStatus;
 }) {
   const { selectedCampus, setSelectedCampus } = useCampus();
   const [explorerTab, setExplorerTab] = useState<CampusType | "all">("all");
@@ -165,12 +163,9 @@ export function HomeClient({
 
         <div className="relative z-10 mx-auto flex max-w-[1240px] flex-col justify-between gap-10 px-4 sm:px-8 lg:flex-row lg:items-center">
           <div className="max-w-[590px]">
-            <div className="inline-flex items-center gap-2 rounded-full bg-[#FFF9EC] px-3.5 py-1.5 text-[13px] font-medium text-[#2A170B]">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#FFF9EC] px-3.5 py-1.5 text-[13px] font-bold text-[#2A170B]">
               <span className="h-2 w-2 rounded-full bg-[#EE6200]" />
-              <span>
-                Synced from ctu.edu.ph
-                {syncStatus.postCount > 0 ? ` · ${syncStatus.postCount} updates` : ""}
-              </span>
+              <span>Breaking Silos, Building Bridges</span>
             </div>
 
             <h1 className="display mt-4 text-[42px] font-bold leading-[1.03] tracking-[-0.02em] text-[#2A170B] sm:text-[56px] lg:text-[68px]">
@@ -467,11 +462,10 @@ export function HomeClient({
                     key={tab.id}
                     type="button"
                     onClick={() => setExplorerTab(tab.id)}
-                    className={`rounded-full px-4 py-2 text-[13px] font-bold transition-colors ${
-                      isSelected
-                        ? "bg-[#2A170B] text-[#FFF9EC]"
-                        : "border border-[#EBD3AE] bg-[#FFF9EC] text-[#2A170B] hover:border-[#EE6200]"
-                    }`}
+                    className={`rounded-full px-4 py-2 text-[13px] font-bold transition-colors ${isSelected
+                      ? "bg-[#2A170B] text-[#FFF9EC]"
+                      : "border border-[#EBD3AE] bg-[#FFF9EC] text-[#2A170B] hover:border-[#EE6200]"
+                      }`}
                   >
                     {tab.label}
                   </button>
@@ -487,11 +481,10 @@ export function HomeClient({
                 <Link
                   key={campus.slug}
                   href={`/campuses/${campus.slug}`}
-                  className={`group flex flex-col justify-between rounded-[18px] bg-[#FFF9EC] p-[18px] transition-all hover:-translate-y-0.5 ${
-                    isCurrent
-                      ? "border-2 border-[#EE6200]"
-                      : "border border-[#EBD3AE] hover:border-[#EE6200]"
-                  }`}
+                  className={`group flex flex-col justify-between rounded-[18px] bg-[#FFF9EC] p-[18px] transition-all hover:-translate-y-0.5 ${isCurrent
+                    ? "border-2 border-[#EE6200]"
+                    : "border border-[#EBD3AE] hover:border-[#EE6200]"
+                    }`}
                 >
                   <div>
                     <div className="flex items-start justify-between gap-2">
@@ -541,6 +534,36 @@ export function HomeClient({
               <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
+        </div>
+      </section>
+
+      {/* compact 7u 7 pillars teaser linking to /about#seven-pillars */}
+      <section className="mx-auto my-12 max-w-[1240px] px-4 sm:px-8">
+        <div className="flex flex-col justify-between gap-5 rounded-[24px] border border-[#0E223D]/25 bg-[#0E223D] p-6 text-[#FFF9EC] sm:flex-row sm:items-center sm:p-8">
+          <div className="max-w-2xl">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-[#A6192E] px-2.5 py-0.5 text-[11px] font-bold tracking-[0.06em] text-[#FFF9EC] uppercase">
+                Why 7U? · 7 Core Pillars
+              </span>
+              <span className="text-[11px] font-bold tracking-[0.05em] text-[#F7D794] uppercase">
+                Breaking Silos, Building Bridges
+              </span>
+            </div>
+            <h2 className="display mt-2 text-[22px] font-bold leading-snug text-[#FFF9EC] sm:text-[26px]">
+              7 Pillars Uniting 29 CTU Campuses Across Cebu
+            </h2>
+            <p className="mt-1.5 text-[13px] leading-relaxed text-[#E9D7B8]">
+              Unified · Updated · University-Wide · User-Centered · Utility-Driven · Understandable · Uplifting
+            </p>
+          </div>
+
+          <Link
+            href="/about#seven-pillars"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-[14px] bg-[#F7D794] px-5 py-3 text-sm font-bold text-[#0E223D] transition-colors hover:bg-[#FF9A00]"
+          >
+            <span>Explore the 7 Pillars</span>
+            <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
     </div>

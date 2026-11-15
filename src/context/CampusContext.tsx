@@ -5,12 +5,14 @@ import { CAMPUS_MAP } from "@/data/campuses";
 
 const STORAGE_KEY = "ctu-portal-selected-campus";
 const CAMPUS_EVENT = "ctu-campus-change";
+export const CHAT_PREFILL_EVENT = "ctu-chat-prefill";
 
 interface CampusContextValue {
   selectedCampus: string;
   setSelectedCampus: (slug: string) => void;
   chatOpen: boolean;
   setChatOpen: (open: boolean | ((prev: boolean) => boolean)) => void;
+  openChatWithPrompt: (prompt: string) => void;
 }
 
 const CampusContext = createContext<CampusContextValue>({
@@ -18,6 +20,7 @@ const CampusContext = createContext<CampusContextValue>({
   setSelectedCampus: () => {},
   chatOpen: false,
   setChatOpen: () => {},
+  openChatWithPrompt: () => {},
 });
 
 function subscribeCampus(callback: () => void) {
@@ -65,8 +68,20 @@ export function CampusProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
+  // prefill chatbot input when user clicks ask ai on program matcher cards
+  const openChatWithPrompt = useCallback((prompt: string) => {
+    setChatOpen(true);
+    try {
+      window.dispatchEvent(new CustomEvent(CHAT_PREFILL_EVENT, { detail: prompt }));
+    } catch {
+      // no-op
+    }
+  }, []);
+
   return (
-    <CampusContext.Provider value={{ selectedCampus, setSelectedCampus, chatOpen, setChatOpen }}>
+    <CampusContext.Provider
+      value={{ selectedCampus, setSelectedCampus, chatOpen, setChatOpen, openChatWithPrompt }}
+    >
       {children}
     </CampusContext.Provider>
   );

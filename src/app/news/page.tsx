@@ -14,16 +14,19 @@ export const metadata: Metadata = {
 export default async function NewsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string }>;
+  searchParams: Promise<{ q?: string; filter?: string }>;
 }) {
-  const [{ q }, cache] = await Promise.all([searchParams, readPortalCache()]);
+  const [{ q, filter }, cache] = await Promise.all([searchParams, readPortalCache()]);
   // eslint-disable-next-line react-hooks/purity
   const referenceNowMs = Date.now();
+  const initialAdvisoriesOnly = filter === "advisories";
   return (
     <NewsFeedClient
+      key={`${q ?? ""}:${filter ?? ""}`}
       posts={cache.posts}
       referenceNowMs={referenceNowMs}
       initialQuery={q ?? ""}
+      initialAdvisoriesOnly={initialAdvisoriesOnly}
     />
   );
 }

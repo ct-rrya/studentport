@@ -44,25 +44,39 @@ export function Navbar() {
       </div>
 
       <div className="mx-auto flex h-[76px] max-w-[1240px] items-center justify-between gap-3 px-4 sm:px-8">
-        {/* brand logo */}
-        <Link href="/" className="flex shrink-0 items-center gap-3">
-          <Image
-            src="/logo.png"
-            alt="CTU Student Portal Logo"
-            width={96}
-            height={40}
-            priority
-            className="h-9 w-auto shrink-0 object-contain sm:h-10"
-          />
-          <div className="leading-tight">
-            <span className="display block text-[17px] font-bold tracking-tight text-[#2A170B] sm:text-[19px]">
-              CTU Student Portal
-            </span>
-            <span className="block text-[12px] text-[#6B4A33]">
-              Cebu Technological University
-            </span>
-          </div>
-        </Link>
+        {/* update navbar brand badge so clicking logo goes home and why 7u links to the 7 pillars */}
+        <div className="flex shrink-0 items-center gap-2.5">
+          <Link
+            href="/"
+            title="7U • CTU Student & Campus Portal"
+            className="flex shrink-0 items-center gap-2.5"
+          >
+            <Image
+              src="/logo2.png"
+              alt="7U CTU Student & Campus Portal Logo"
+              width={84}
+              height={46}
+              priority
+              className="h-10 w-auto shrink-0 object-contain sm:h-11"
+            />
+            <div className="leading-tight">
+              <span className="display block text-[19px] font-bold tracking-tight text-[#2A170B] sm:text-[21px]">
+                7U
+              </span>
+              <span className="hidden text-[11px] font-medium text-[#6B4A33] sm:block">
+                CTU Student Portal
+              </span>
+            </div>
+          </Link>
+
+          <Link
+            href="/about#seven-pillars"
+            title="Why 7U? See the 7 Pillars"
+            className="hidden rounded-full bg-[#0E223D] px-2.5 py-0.5 text-[10px] font-bold whitespace-nowrap text-[#F7D794] transition-colors hover:bg-[#A6192E] hover:text-[#FFF9EC] sm:inline-flex"
+          >
+            Why 7U?
+          </Link>
+        </div>
 
         {/* desktop nav pills */}
         <nav className="hidden items-center gap-1 lg:flex">
@@ -144,13 +158,20 @@ export function Navbar() {
           <div className="flex h-[68px] shrink-0 items-center justify-between border-b border-[#EBD3AE] px-5">
             <div className="flex items-center gap-2.5">
               <Image
-                src="/logo.png"
-                alt="CTU Student Portal Logo"
-                width={76}
-                height={32}
-                className="h-8 w-auto shrink-0 object-contain"
+                src="/logo2.png"
+                alt="7U CTU Student & Campus Portal Logo"
+                width={72}
+                height={40}
+                className="h-9 w-auto shrink-0 object-contain"
               />
-              <span className="display text-[17px] font-bold text-[#2A170B]">Menu</span>
+              <span className="display text-[17px] font-bold text-[#2A170B]">7U Menu</span>
+              <Link
+                href="/about#seven-pillars"
+                onClick={() => setMobileOpen(false)}
+                className="rounded-full bg-[#0E223D] px-2.5 py-0.5 text-[10px] font-bold text-[#F7D794]"
+              >
+                Why 7U?
+              </Link>
             </div>
             <button
               type="button"

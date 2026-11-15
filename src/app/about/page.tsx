@@ -2,14 +2,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { ExternalLink, Info, Server, ShieldCheck } from "lucide-react";
 import { readPortalCache } from "@/lib/cache";
+import { SevenPillarsGrid } from "@/components/SevenPillarsGrid";
 import { SyncPanelClient } from "@/components/SyncPanelClient";
 
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "About & Sync Status",
+  title: "About 7U & Sync Status",
   description:
-    "Independent student-built CTU portal disclaimer, architecture overview, and live sync status.",
+    "Discover the 7U 7 core pillars, independent student-built CTU portal architecture, and live sync status.",
   alternates: { canonical: "/about" },
 };
 
@@ -34,11 +35,11 @@ export default async function AboutPage() {
         </div>
 
         <Image
-          src="/logo.png"
-          alt="CTU Student Portal Emblem"
-          width={153}
-          height={64}
-          className="h-14 w-auto shrink-0 object-contain sm:h-16"
+          src="/logo2.png"
+          alt="7U CTU Student & Campus Portal Emblem"
+          width={148}
+          height={82}
+          className="h-16 w-auto shrink-0 object-contain sm:h-20"
         />
       </div>
 
@@ -68,6 +69,11 @@ export default async function AboutPage() {
             </p>
           </div>
         </div>
+      </div>
+
+      {/* 7u 7 pillars section */}
+      <div className="mt-8">
+        <SevenPillarsGrid />
       </div>
 
       {/* live sync panel */}

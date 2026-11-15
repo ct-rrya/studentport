@@ -24,8 +24,10 @@ export function sanitizeCtuHtml(rawHtml: string): string {
   if (!rawHtml) return "";
   const $ = cheerio.load(rawHtml, null, false);
 
-  // nuke anything executable or sketchy
-  $("script, style, iframe, object, embed, form, input, button, textarea, select, meta, link").remove();
+  // nuke anything executable, active, or sketchy
+  $(
+    "script, style, iframe, object, embed, form, input, button, textarea, select, meta, link, base, svg, math, template, noscript"
+  ).remove();
 
   $("*").each((_, el) => {
     const attribs = (el as unknown as { attribs?: Record<string, string> }).attribs;
@@ -35,21 +37,30 @@ export function sanitizeCtuHtml(rawHtml: string): string {
       const lowerAttr = attr.toLowerCase();
       const val = attribs[attr] ?? "";
 
-      // strip inline js handlers like onclick, onerror, etc
-      if (lowerAttr.startsWith("on")) {
+      // strip inline js handlers like onclick, onerror, and sketchy srcdoc/formaction attrs
+      if (
+        lowerAttr.startsWith("on") ||
+        lowerAttr === "srcdoc" ||
+        lowerAttr === "formaction" ||
+        lowerAttr === "xlink:href"
+      ) {
         $(el).removeAttr(attr);
         continue;
       }
 
-      // block javascript: or data: urls in links/media
+      // allowlist safe url protocols and block obfuscated control chars like java\tscript:
       if (lowerAttr === "href" || lowerAttr === "src") {
+        const cleaned = val.replace(/[\u0000-\u001F\u007F\s]+/g, "");
         const trimmed = val.trim();
-        if (/^(javascript|vbscript|data:text\/html):/i.test(trimmed)) {
+        const isSafeUrl =
+          /^(https?:|mailto:|tel:|\/(?!\/)|#)/i.test(cleaned) ||
+          trimmed === "";
+        if (!isSafeUrl) {
           $(el).removeAttr(attr);
           continue;
         }
         // normalize relative wordpress paths to ctu.edu.ph
-        if (trimmed.startsWith("/")) {
+        if (trimmed.startsWith("/") && !trimmed.startsWith("//")) {
           $(el).attr(attr, `${CTU_ORIGIN}${trimmed}`);
         }
       }

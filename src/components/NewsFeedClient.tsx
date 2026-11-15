@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import { Calendar, Filter, Search, Tag, X } from "lucide-react";
+import { AlertTriangle, Calendar, Filter, Search, Tag, X } from "lucide-react";
 import { CTU_CAMPUSES, getCampusBySlug } from "@/data/campuses";
 import { useCampus } from "@/context/CampusContext";
+import { isAdvisoryPost } from "@/lib/advisories";
 import { NewsPost } from "@/types/portal";
 import { NewsCard } from "./NewsCard";
 
@@ -11,15 +12,18 @@ export function NewsFeedClient({
   posts,
   referenceNowMs,
   initialQuery = "",
+  initialAdvisoriesOnly = false,
 }: {
   posts: NewsPost[];
   referenceNowMs: number;
   initialQuery?: string;
+  initialAdvisoriesOnly?: boolean;
 }) {
   const { selectedCampus, setSelectedCampus } = useCampus();
   const [search, setSearch] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [dateRange, setDateRange] = useState<"all" | "7d" | "30d" | "90d">("all");
+  const [advisoriesOnly, setAdvisoriesOnly] = useState(initialAdvisoriesOnly);
 
   // gather unique categories & tags from cached posts for filter dropdown
   const categories = useMemo(() => {
@@ -39,6 +43,10 @@ export function NewsFeedClient({
     const dayMs = 24 * 60 * 60 * 1000;
 
     return posts.filter((post) => {
+      if (advisoriesOnly && !isAdvisoryPost(post)) {
+        return false;
+      }
+
       if (selectedCampus !== "all" && !post.campusSlugs.includes(selectedCampus)) {
         return false;
       }
@@ -73,12 +81,13 @@ export function NewsFeedClient({
 
       return true;
     });
-  }, [posts, selectedCampus, selectedCategory, dateRange, search, referenceNowMs]);
+  }, [posts, advisoriesOnly, selectedCampus, selectedCategory, dateRange, search, referenceNowMs]);
 
   const activeCampus =
     selectedCampus !== "all" ? getCampusBySlug(selectedCampus) : undefined;
 
   const hasFilters =
+    advisoriesOnly ||
     selectedCampus !== "all" ||
     selectedCategory !== "all" ||
     dateRange !== "all" ||
@@ -120,6 +129,7 @@ export function NewsFeedClient({
             <button
               type="button"
               onClick={() => {
+                setAdvisoriesOnly(false);
                 setSearch("");
                 setSelectedCategory("all");
                 setDateRange("all");
@@ -130,6 +140,18 @@ export function NewsFeedClient({
               Reset
             </button>
           )}
+          <button
+            type="button"
+            onClick={() => setAdvisoriesOnly((prev) => !prev)}
+            className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[11px] font-bold transition-colors ${
+              advisoriesOnly
+                ? "border-[#EE6200] bg-[#EE6200] text-[#FFF9EC]"
+                : "border-[#EBD3AE] bg-[#FFF9EC] text-[#2A170B] hover:border-[#EE6200]"
+            }`}
+          >
+            <AlertTriangle className="h-3 w-3" />
+            Advisories Only
+          </button>
         </div>
       </div>
 

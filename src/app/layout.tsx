@@ -3,46 +3,48 @@ import { CampusProvider } from "@/context/CampusContext";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { CtuChatbot } from "@/components/CtuChatbot";
+import { UrgentAdvisoryBanner } from "@/components/UrgentAdvisoryBanner";
 import { JsonLd } from "@/components/JsonLd";
+import { getLatestBannerAdvisory, type UrgentAdvisory } from "@/lib/advisories";
 import { readPortalCache } from "@/lib/cache";
 import { getSiteUrl } from "@/lib/seo";
 import "./globals.css";
 
 const siteUrl = getSiteUrl();
 
-// set metadataBase so og images and canonical urls dont break on vercel
+// keep json-ld and metadata synced with the new 7u brand name
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "CTU Student & Campus Portal",
-    template: "%s | CTU Portal",
+    default: "7U — CTU Student & Campus Portal",
+    template: "%s | 7U Portal",
   },
   description:
-    "Fast, mobile-first student portal for Cebu Technological University (CTU). Browse campus-filtered announcements, all 29 CTU campuses, academic programs, and official student portals.",
+    "7U is a fast, mobile-first student portal bridging Cebu Technological University's 29 campuses. Browse announcements, degree programs, and official portals.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
     type: "website",
     locale: "en_PH",
-    siteName: "CTU Student & Campus Portal",
+    siteName: "7U — CTU Student & Campus Portal",
     url: "/",
-    title: "CTU Student & Campus Portal",
+    title: "7U — CTU Student & Campus Portal",
     description:
       "Announcements, academic programs, and all 29 campuses of Cebu Technological University filtered to your campus.",
     images: [
       {
-        url: "/logo.png",
-        alt: "CTU Student & Campus Portal Logo",
+        url: "/logo2.jpg",
+        alt: "7U CTU Student & Campus Portal Logo",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "CTU Student & Campus Portal",
+    title: "7U — CTU Student & Campus Portal",
     description:
-      "Campus-filtered announcements, 29 CTU campuses directory, degree programs, and student portals.",
-    images: ["/logo.png"],
+      "7U: campus-filtered announcements, 29 CTU campuses directory, degree programs, and student portals.",
+    images: ["/logo2.jpg"],
   },
   // google search console ownership tag so gsc can verify the home page
   verification: {
@@ -56,9 +58,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   let lastSyncedAt: string | undefined;
+  let latestAdvisory: UrgentAdvisory | null = null;
   try {
     const cache = await readPortalCache();
     lastSyncedAt = cache.syncStatus.lastSyncedAt ?? undefined;
+    // eslint-disable-next-line react-hooks/purity
+    latestAdvisory = getLatestBannerAdvisory(cache.posts, Date.now());
   } catch {
     // fallback if cache isnt readable during build
   }
@@ -66,7 +71,8 @@ export default async function RootLayout({
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "CTU Student & Campus Portal",
+    name: "7U — CTU Student & Campus Portal",
+    alternateName: ["7U", "7U Portal", "CTU Portal"],
     url: siteUrl,
     description:
       "Student-built portal organizing public announcements, degree programs, and campus directories from Cebu Technological University (ctu.edu.ph).",
@@ -107,6 +113,7 @@ export default async function RootLayout({
         <JsonLd data={universitySchema} />
         <CampusProvider>
           <Navbar />
+          <UrgentAdvisoryBanner advisory={latestAdvisory} />
           <main className="flex-1">{children}</main>
           <Footer lastSyncedAt={lastSyncedAt} />
           <CtuChatbot />

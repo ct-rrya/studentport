@@ -25,15 +25,20 @@ export function Footer({ lastSyncedAt }: FooterProps) {
           <div>
             <div className="flex items-center gap-3">
               <Image
-                src="/logo.png"
-                alt="CTU Student Portal Logo"
-                width={86}
-                height={36}
-                className="h-9 w-auto shrink-0 object-contain"
+                src="/logo2.png"
+                alt="7U CTU Student & Campus Portal Logo"
+                width={80}
+                height={44}
+                className="h-10 w-auto shrink-0 object-contain"
               />
-              <span className="display text-[17px] font-bold tracking-tight text-[#FFF9EC]">
-                CTU Student Portal
-              </span>
+              <div>
+                <span className="display block text-[17px] font-bold tracking-tight text-[#FFF9EC]">
+                  7U · CTU Student Portal
+                </span>
+                <span className="block text-[11px] text-[#F7D794]">
+                  Breaking Silos, Building Bridges
+                </span>
+              </div>
             </div>
             <p className="mt-3.5 max-w-[340px] text-[14px] leading-[1.6] text-[#E9D7B8]">
               An independent, student-built portal that organizes public announcements, campus
