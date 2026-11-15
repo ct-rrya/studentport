@@ -44,6 +44,10 @@ export const metadata: Metadata = {
       "Campus-filtered announcements, 29 CTU campuses directory, degree programs, and student portals.",
     images: ["/logo.png"],
   },
+  // google search console ownership tag so gsc can verify the home page
+  verification: {
+    google: "lJkPlMVl7ZzNzwUGn_mGviHcf6DmXWZt9UIG-uC4BLU",
+  },
 };
 
 export default async function RootLayout({
