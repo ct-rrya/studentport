@@ -5,9 +5,11 @@ import {
   ExternalLink,
   FileText,
   Globe,
+  HelpCircle,
   PhoneCall,
 } from "lucide-react";
 import { getCampusBySlug } from "@/data/campuses";
+import { STUDENT_FAQS } from "@/data/resources-seed";
 import { useCampus } from "@/context/CampusContext";
 import { ResourceItem } from "@/types/portal";
 import { CampusTagBadge } from "./CampusBadge";
@@ -192,6 +194,32 @@ export function ResourcesClient({
                   ))}
                 </div>
               )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* visible student faq section matching FAQPage schema */}
+      <section className="mt-12">
+        <div className="flex items-center gap-2">
+          <HelpCircle className="h-5 w-5 text-[#EE6200]" />
+          <h2 className="display text-xl font-bold text-[#2A170B]">
+            Frequently Asked Questions
+          </h2>
+        </div>
+
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          {STUDENT_FAQS.map((faq) => (
+            <div
+              key={faq.question}
+              className="rounded-[20px] border border-[#EBD3AE] bg-[#FFF9EC] p-5"
+            >
+              <h3 className="display text-[15px] font-bold text-[#2A170B]">
+                {faq.question}
+              </h3>
+              <p className="mt-2 text-xs leading-relaxed text-[#6B4A33]">
+                {faq.answer}
+              </p>
             </div>
           ))}
         </div>

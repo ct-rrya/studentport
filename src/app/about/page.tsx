@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import { ExternalLink, Info, Server, ShieldCheck } from "lucide-react";
 import { readPortalCache } from "@/lib/cache";
@@ -5,10 +6,11 @@ import { SyncPanelClient } from "@/components/SyncPanelClient";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "About & Sync Status | CTU Student Portal",
+export const metadata: Metadata = {
+  title: "About & Sync Status",
   description:
     "Independent student-built CTU portal disclaimer, architecture overview, and live sync status.",
+  alternates: { canonical: "/about" },
 };
 
 export default async function AboutPage() {

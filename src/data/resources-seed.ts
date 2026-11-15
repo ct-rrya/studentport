@@ -94,3 +94,27 @@ export const OFFICIAL_RESOURCES: ResourceItem[] = [
     campusSlugs: ["main", "cebu-city-mountain", "guba", "consolacion", "liloan"],
   },
 ];
+
+// structured faq entries rendered on /resources and emitted as FAQPage json-ld
+export const STUDENT_FAQS: Array<{ question: string; answer: string }> = [
+  {
+    question: "How do I access the CTU Enrollment and Admission Portal?",
+    answer:
+      "You can access Cebu Technological University's official online registration, admission, and subject load system at https://enrolment.ctu.edu.ph/. Always verify semester schedules and campus-specific enrollment cutoffs on your campus page or the official ctu.edu.ph announcements.",
+  },
+  {
+    question: "How do CTU students log in to CTU Online LMS?",
+    answer:
+      "Cebu Technological University courses and blended learning modules are hosted at https://online.ctu.edu.ph/. Use your university-issued CTU student credentials or coordinate with your campus MIS/registrar office if you need a password reset.",
+  },
+  {
+    question: "How many CTU campuses are included in the portal directory?",
+    answer:
+      "The portal covers all 29 CTU campuses across Cebu province: 1 Main Campus (Cebu City), 16 Satellite Campuses, and 12 Extension Campuses. Use the campus selector in the navigation bar to filter announcements, programs, and resources for your campus.",
+  },
+  {
+    question: "Where do announcements on this portal come from?",
+    answer:
+      "All news articles and downloadable memoranda are automatically synced on the server from the official Cebu Technological University website (https://www.ctu.edu.ph/). Every post cites its publish date and includes a direct link to the original ctu.edu.ph source.",
+  },
+];

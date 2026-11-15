@@ -1,13 +1,15 @@
+import type { Metadata } from "next";
 import { BASELINE_PROGRAMS } from "@/data/programs-seed";
 import { readPortalCache } from "@/lib/cache";
 import { ProgramsClient } from "@/components/ProgramsClient";
 
 export const dynamic = "force-dynamic";
 
-export const metadata = {
-  title: "Academic Programs | CTU Student Portal",
+export const metadata: Metadata = {
+  title: "Academic Programs",
   description:
-    "Searchable catalog of CTU degree programs across all 29 campuses.",
+    "Searchable catalog of Cebu Technological University (CTU) undergraduate and graduate degree programs across all 29 campuses.",
+  alternates: { canonical: "/programs" },
 };
 
 export default async function ProgramsPage() {

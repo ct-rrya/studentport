@@ -10,12 +10,14 @@ import { NewsCard } from "./NewsCard";
 export function NewsFeedClient({
   posts,
   referenceNowMs,
+  initialQuery = "",
 }: {
   posts: NewsPost[];
   referenceNowMs: number;
+  initialQuery?: string;
 }) {
   const { selectedCampus, setSelectedCampus } = useCampus();
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(initialQuery);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [dateRange, setDateRange] = useState<"all" | "7d" | "30d" | "90d">("all");
 

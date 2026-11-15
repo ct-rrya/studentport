@@ -1,11 +1,45 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Calendar, ExternalLink, Tag, User } from "lucide-react";
 import { readPortalCache } from "@/lib/cache";
+import { getSiteUrl } from "@/lib/seo";
 import { CampusTagBadge } from "@/components/CampusBadge";
 import { formatDisplayDate } from "@/components/NewsCard";
+import { JsonLd } from "@/components/JsonLd";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const cache = await readPortalCache();
+  const post = cache.posts.find((p) => p.slug === slug);
+
+  if (!post) {
+    return { title: "Not Found" };
+  }
+
+  return {
+    title: post.title,
+    description: post.excerpt,
+    alternates: { canonical: `/news/${post.slug}` },
+    openGraph: {
+      type: "article",
+      url: `/news/${post.slug}`,
+      title: post.title,
+      description: post.excerpt,
+      publishedTime: post.date,
+      modifiedTime: post.date,
+      images: post.featuredImage
+        ? [{ url: post.featuredImage, alt: post.title }]
+        : undefined,
+    },
+  };
+}
 
 export default async function NewsArticlePage({
   params,
@@ -20,8 +54,31 @@ export default async function NewsArticlePage({
     notFound();
   }
 
+  const siteUrl = getSiteUrl();
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "NewsArticle",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.date,
+    author: {
+      "@type": "Person",
+      name: post.author || "Cebu Technological University",
+    },
+    publisher: {
+      "@type": "EducationalOrganization",
+      name: "Cebu Technological University",
+      url: "https://www.ctu.edu.ph/",
+    },
+    mainEntityOfPage: `${siteUrl}/news/${post.slug}`,
+    isBasedOn: post.originalUrl,
+    ...(post.featuredImage ? { image: [post.featuredImage] } : {}),
+  };
+
   return (
     <article className="mx-auto max-w-4xl px-4 py-10 sm:px-8">
+      <JsonLd data={articleSchema} />
       {/* back link */}
       <Link
         href="/news"
@@ -59,11 +116,11 @@ export default async function NewsArticlePage({
             {post.title}
           </h1>
 
-          {/* meta strip */}
+          {/* meta strip with semantic time */}
           <div className="mt-4 flex flex-wrap items-center gap-4 border-b border-[#EBD3AE] pb-5 text-xs font-medium text-[#6B4A33]">
             <span className="inline-flex items-center gap-1.5">
               <Calendar className="h-4 w-4 text-[#EE6200]" />
-              {formatDisplayDate(post.date)}
+              <time dateTime={post.date}>{formatDisplayDate(post.date)}</time>
             </span>
             <span className="inline-flex items-center gap-1.5">
               <User className="h-4 w-4 text-[#2A170B]" />
@@ -72,6 +129,14 @@ export default async function NewsArticlePage({
             <span className="rounded-[8px] bg-[#FFEFD0] px-2.5 py-0.5 text-[11px] font-bold text-[#2A170B]">
               Source: {post.source === "wp-rest" ? "WP REST API" : "RSS Feed"}
             </span>
+            {cache.syncStatus.lastSyncedAt && (
+              <span>
+                Last Synced from ctu.edu.ph:{" "}
+                <time dateTime={cache.syncStatus.lastSyncedAt}>
+                  {formatDisplayDate(cache.syncStatus.lastSyncedAt)}
+                </time>
+              </span>
+            )}
           </div>
 
           {/* auto-detected campus badges */}
@@ -90,10 +155,19 @@ export default async function NewsArticlePage({
             )}
           </div>
 
-          {/* mandatory view original button */}
+          {/* mandatory view original source attribution */}
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3 rounded-[18px] border border-[#EBD3AE] bg-[#FFEFD0] p-4">
             <p className="text-xs text-[#6B4A33]">
-              Read the verified institutional post directly on the official CTU domain.
+              <strong>Original Source:</strong> Verified institutional post hosted on the official{" "}
+              <a
+                href={post.originalUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-bold text-[#2A170B] underline underline-offset-2 hover:text-[#EE6200]"
+              >
+                ctu.edu.ph
+              </a>{" "}
+              domain.
             </p>
             <a
               href={post.originalUrl}

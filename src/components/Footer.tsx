@@ -124,10 +124,27 @@ export function Footer({ lastSyncedAt }: FooterProps) {
 
         <div className="mt-9 flex flex-col items-start justify-between gap-2 border-t border-[#5A3A22] pt-5 text-[13px] text-[#E9D7B8] sm:flex-row sm:items-center">
           <p>
-            Not an official CTU administration website. Every announcement links back to its source
-            on ctu.edu.ph.
+            Not an official CTU administration website. Every announcement links back to its{" "}
+            <a
+              href="https://www.ctu.edu.ph/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[#F7D794] underline underline-offset-2 hover:text-[#FFF9EC]"
+            >
+              original source on ctu.edu.ph
+            </a>
+            .
           </p>
-          <p className="shrink-0">{formattedSync}</p>
+          <p className="shrink-0">
+            {lastSyncedAt ? (
+              <>
+                Last Synced from ctu.edu.ph:{" "}
+                <time dateTime={lastSyncedAt}>{formattedSync.replace(/^Last synced\s*/i, "")}</time>
+              </>
+            ) : (
+              formattedSync
+            )}
+          </p>
         </div>
       </div>
 

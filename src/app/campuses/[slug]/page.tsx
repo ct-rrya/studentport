@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -13,11 +14,46 @@ import {
 import { getCampusBySlug, getCampusFacebookUrl } from "@/data/campuses";
 import { BASELINE_PROGRAMS } from "@/data/programs-seed";
 import { readPortalCache } from "@/lib/cache";
+import { getSiteUrl } from "@/lib/seo";
 import { CampusTypeBadge } from "@/components/CampusBadge";
-import { NewsCard } from "@/components/NewsCard";
+import { NewsCard, formatDisplayDate } from "@/components/NewsCard";
 import { FacebookFeedEmbed } from "@/components/FacebookFeedEmbed";
+import { JsonLd } from "@/components/JsonLd";
 
 export const dynamic = "force-dynamic";
+
+function formatClassification(type: "main" | "satellite" | "extension"): string {
+  if (type === "main") return "Main Campus";
+  if (type === "satellite") return "Satellite Campus";
+  return "Extension Campus";
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const campus = getCampusBySlug(slug);
+  if (!campus) {
+    return { title: "Campus Not Found" };
+  }
+
+  const label = formatClassification(campus.type);
+  const description = `${campus.name} is a Cebu Technological University ${label.toLowerCase()} in ${campus.location}. View offered degree programs, synced CTU announcements, and official contact links.`;
+
+  return {
+    title: campus.name,
+    description,
+    alternates: { canonical: `/campuses/${campus.slug}` },
+    openGraph: {
+      type: "website",
+      url: `/campuses/${campus.slug}`,
+      title: campus.name,
+      description,
+    },
+  };
+}
 
 export default async function CampusDetailPage({
   params,
@@ -43,8 +79,35 @@ export default async function CampusDetailPage({
       prog.campusSlugs.includes(campus.slug)
   );
 
+  const siteUrl = getSiteUrl();
+  const classification = formatClassification(campus.type);
+  const websiteUrl = campus.websiteUrl || `https://www.ctu.edu.ph/${campus.slug}/`;
+  const facebookUrl = getCampusFacebookUrl(campus);
+
+  const campusSchema = {
+    "@context": "https://schema.org",
+    "@type": ["CollegeOrUniversity", "EducationalOrganization"],
+    name: campus.name,
+    url: `${siteUrl}/campuses/${campus.slug}`,
+    description: campus.description,
+    parentOrganization: {
+      "@type": "EducationalOrganization",
+      name: "Cebu Technological University",
+      url: "https://www.ctu.edu.ph/",
+    },
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: campus.address,
+      addressLocality: campus.location,
+      addressRegion: "Cebu",
+      addressCountry: "PH",
+    },
+    sameAs: [websiteUrl, facebookUrl],
+  };
+
   return (
     <div className="mx-auto max-w-[1240px] px-4 py-10 sm:px-8">
+      <JsonLd data={campusSchema} />
       <Link
         href="/campuses"
         className="inline-flex items-center gap-1.5 text-sm font-bold text-[#2A170B] transition-colors hover:text-[#EE6200]"
@@ -67,6 +130,47 @@ export default async function CampusDetailPage({
         <p className="mt-2 max-w-3xl text-sm leading-relaxed text-[#6B4A33] sm:text-base">
           {campus.description}
         </p>
+
+        {/* answer-first 50-word aeo & geo summary card */}
+        <div className="mt-5 rounded-[16px] border border-[#EBD3AE] bg-[#FFEFD0] p-4 text-[13px] leading-relaxed text-[#2A170B]">
+          <p>
+            <strong>{campus.name}</strong> is a public{" "}
+            <strong>{classification}</strong> of Cebu Technological University located at{" "}
+            {campus.address}.{" "}
+            {campus.type === "extension"
+              ? "As an extension unit under the CTU Cebu university system, it expands higher education access in its municipality. "
+              : campus.type === "satellite"
+              ? "As an autonomous regional satellite campus in the CTU system, it delivers full degree instruction and research. "
+              : "It serves as the flagship main seat of Cebu Technological University. "}
+            Explore {campusPrograms.length} degree programs, official resources via{" "}
+            <a
+              href={websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-[#EE6200] underline underline-offset-2"
+            >
+              Original Source ({websiteUrl.replace(/^https?:\/\//, "").replace(/\/$/, "")})
+            </a>
+            , or campus updates on{" "}
+            <a
+              href={facebookUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-bold text-[#EE6200] underline underline-offset-2"
+            >
+              Facebook
+            </a>
+            .
+          </p>
+          {cache.syncStatus.lastSyncedAt && (
+            <p className="mt-1.5 text-[12px] text-[#6B4A33]">
+              Last Synced from ctu.edu.ph:{" "}
+              <time dateTime={cache.syncStatus.lastSyncedAt}>
+                {formatDisplayDate(cache.syncStatus.lastSyncedAt)}
+              </time>
+            </p>
+          )}
+        </div>
 
         <div className="mt-6 grid gap-4 border-t border-[#EBD3AE] pt-5 sm:grid-cols-2 lg:grid-cols-4">
           <div className="flex items-start gap-2.5 text-xs text-[#6B4A33]">
