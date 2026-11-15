@@ -1,0 +1,123 @@
+@import "tailwindcss";
+
+/* warm cream + espresso palette from the portal redesign */
+:root {
+  --background: #FFF9EC;
+  --foreground: #2A170B;
+  --ctu-cream: #FFF9EC;
+  --ctu-cream-soft: #FFEFD0;
+  --ctu-apricot: #F7D794;
+  --ctu-peach: #FBA17E;
+  --ctu-amber: #FF9A00;
+  --ctu-orange: #EE6200;
+  --ctu-brown: #2A170B;
+  --ctu-brown-muted: #6B4A33;
+  --ctu-border: #EBD3AE;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-display: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.display {
+  font-family: var(--font-display);
+}
+
+/* clean typography for sanitized wordpress html articles */
+.ctu-prose {
+  color: #2A170B;
+  line-height: 1.75;
+  font-size: 1.02rem;
+}
+
+.ctu-prose p {
+  margin-bottom: 1.1rem;
+}
+
+.ctu-prose h1,
+.ctu-prose h2,
+.ctu-prose h3,
+.ctu-prose h4 {
+  color: #2A170B;
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-top: 1.5rem;
+  margin-bottom: 0.65rem;
+  line-height: 1.3;
+}
+
+.ctu-prose h2 {
+  font-size: 1.35rem;
+}
+
+.ctu-prose h3 {
+  font-size: 1.15rem;
+}
+
+.ctu-prose a {
+  color: #EE6200;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  word-break: break-word;
+}
+
+.ctu-prose a:hover {
+  color: #2A170B;
+}
+
+.ctu-prose ul,
+.ctu-prose ol {
+  margin: 0.9rem 0 1.1rem 1.4rem;
+}
+
+.ctu-prose ul {
+  list-style-type: disc;
+}
+
+.ctu-prose ol {
+  list-style-type: decimal;
+}
+
+.ctu-prose li {
+  margin-bottom: 0.35rem;
+}
+
+.ctu-prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 1rem;
+  margin: 1.25rem auto;
+  display: block;
+  border: 1px solid #EBD3AE;
+  box-shadow: 0 2px 10px rgba(42, 23, 11, 0.08);
+}
+
+.ctu-prose figure {
+  margin: 1.25rem 0;
+}
+
+.ctu-prose figcaption {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #6B4A33;
+  margin-top: 0.4rem;
+}
+
+.ctu-prose blockquote {
+  border-left: 4px solid #EE6200;
+  background: #FFEFD0;
+  padding: 0.75rem 1rem;
+  margin: 1.25rem 0;
+  border-radius: 0 0.75rem 0.75rem 0;
+  color: #2A170B;
+}
